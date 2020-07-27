@@ -17,5 +17,8 @@ unsigned long long int hailstone_sequence(unsigned long long int num)
 }
 void main()
 {
-    hailstone_sequence(45744786);
+    unsigned long long int num;
+    printf("Enter a number: ");
+    scanf("%d", &num);
+    hailstone_sequence(num);
 }
