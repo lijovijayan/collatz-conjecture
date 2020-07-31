@@ -1,4 +1,4 @@
-a.out
-jsApp/package-lock.json
-jsApp/node_modules
-jsApp/bundle.js
+node_modules
+dist/bundle.js
+package-lock.json
+dist/main.js

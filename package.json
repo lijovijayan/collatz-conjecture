@@ -4,11 +4,24 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "gulp serve",
+    "build": "gulp build"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "chart.js": "^2.9.3"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.11.0",
+    "browser-sync": "^2.26.12",
+    "browserify": "^16.5.1",
+    "gulp": "^4.0.2",
+    "gulp-babel": "*",
+    "gulp-livereload": "*",
+    "gulp-rename": "*",
+    "gulp-terser": "^1.2.1",
+    "vinyl-source-stream": "*"
   }
 }
