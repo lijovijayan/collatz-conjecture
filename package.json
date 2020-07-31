@@ -21,6 +21,7 @@
     "gulp-babel": "*",
     "gulp-livereload": "*",
     "gulp-rename": "*",
+    "gulp-strip-debug": "^3.0.0",
     "gulp-terser": "^1.2.1",
     "vinyl-source-stream": "*"
   }
