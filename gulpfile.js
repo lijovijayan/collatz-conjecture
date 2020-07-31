@@ -7,6 +7,7 @@ const rename = require("gulp-rename");
 const browserify = require("browserify");
 var browserSync = require("browser-sync").create();
 var reload = browserSync.reload;
+var stripDebug = require("gulp-strip-debug");
 
 const conf = {
   srcdir: "./src/",
@@ -26,6 +27,12 @@ const bundledev = () => {
     .bundle()
     .pipe(source(conf.build))
     .pipe(gulp.dest(conf.builddir));
+};
+const stripdebug = () => {
+  console.log("stripping console logs");
+  return src(conf.srcdir + conf.src)
+    .pipe(stripDebug())
+    .pipe(gulp.dest("dist"));
 };
 const bundle = () => {
   console.log("browserify production build");
@@ -51,8 +58,29 @@ const es = () => {
     .pipe(terser())
     .pipe(gulp.dest(conf.distdir));
 };
-gulp.task("serve", function () {
-  bundledev();
+// gulp.task("devserve", function () {
+//   bundledev();
+//   series(
+//     bundledev(),
+//     browserSync.init({
+//       server: {
+//         baseDir: "./",
+//       },
+//     })
+//   );
+//   gulp
+//     .watch([
+//       "./**/*.js",
+//       "!./**/*.html",
+//       "!./**/*.css",
+//       "!./dist/*",
+//       "!./build/*",
+//       "!./node_modules/*",
+//     ])
+//     .on("change", series(bundledev, reload));
+//   gulp.watch(["!./**/*.html", "!./**/*.css"]).on("change", reload);
+// });
+const startserver = () => {
   browserSync.init({
     server: {
       baseDir: "./",
@@ -69,5 +97,6 @@ gulp.task("serve", function () {
     ])
     .on("change", series(bundledev, reload));
   gulp.watch(["!./**/*.html", "!./**/*.css"]).on("change", reload);
-});
-exports.build = series(bundle, babelBuild, es);
+};
+exports.build = series(stripdebug, bundle, babelBuild, es);
+exports.serve = series(bundledev, startserver);
