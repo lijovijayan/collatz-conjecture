@@ -11,21 +11,11 @@ var reload = browserSync.reload;
 const conf = {
   srcdir: "./src/",
   src: "main.js",
-  destdir: "./dist/",
+  distdir: "./dist/",
   builddir: "./build/",
-  build: "./dist/",
-  dest: "bundle.js",
+  build: "bundle.js",
+  dist: "bundle.js",
   // destmin: "bundle.min.js",
-};
-const bundle = () => {
-  console.log("browserify production build");
-  return browserify({
-    entries: `${conf.srcdir + conf.src}`,
-    debug: false,
-  })
-    .bundle()
-    .pipe(source(conf.dest))
-    .pipe(gulp.dest(conf.destdir));
 };
 const bundledev = () => {
   console.log("browserify development build");
@@ -34,22 +24,32 @@ const bundledev = () => {
     debug: true,
   })
     .bundle()
-    .pipe(source(conf.dest))
-    .pipe(gulp.dest(conf.destdir));
+    .pipe(source(conf.build))
+    .pipe(gulp.dest(conf.builddir));
+};
+const bundle = () => {
+  console.log("browserify production build");
+  return browserify({
+    entries: `${conf.srcdir + conf.src}`,
+    debug: false,
+  })
+    .bundle()
+    .pipe(source(conf.dist))
+    .pipe(gulp.dest(conf.distdir));
 };
 const babelBuild = () => {
   console.log("running Babel compiler");
-  return src(conf.destdir + conf.dest)
+  return src(conf.distdir + conf.dist)
     .pipe(babel())
-    .pipe(rename(conf.dest))
-    .pipe(dest(conf.destdir));
+    .pipe(rename(conf.dist))
+    .pipe(dest(conf.distdir));
 };
 const es = () => {
   console.log("running gulp-terser js minimizer");
   return gulp
-    .src(conf.destdir + conf.dest)
+    .src(conf.distdir + conf.dist)
     .pipe(terser())
-    .pipe(gulp.dest(conf.destdir));
+    .pipe(gulp.dest(conf.distdir));
 };
 gulp.task("serve", function () {
   bundledev();
