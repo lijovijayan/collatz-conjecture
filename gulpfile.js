@@ -89,8 +89,8 @@ const startserver = () => {
   gulp
     .watch([
       "./**/*.js",
-      "!./**/*.html",
-      "!./**/*.css",
+      "./**/*.html",
+      "./**/*.css",
       "!./dist/*",
       "!./build/*",
       "!./node_modules/*",
