@@ -1,0 +1,22 @@
+body {
+  padding: 0px;
+  margin: 0px;
+}
+.chart-canvas {
+  width: 100% !important;
+}
+.row {
+  display: flex;
+  flex-direction: row;
+}
+.canvas-container {
+  flex: 1;
+  padding: 10px;
+}
+.sidebar {
+  /* width: 300px; */
+  height: 100vh;
+  box-shadow: -2px 0px 6px 0px #cdcdcd;
+  position: relative;
+  transition: 0.4s ease-out;
+}
