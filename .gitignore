@@ -1,5 +1,4 @@
 node_modules
-dist/bundle.js
 package-lock.json
-dist/main.js
-build/bundle.js
+dist/
+build/

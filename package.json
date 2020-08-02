@@ -6,23 +6,26 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "gulp serve",
-    "build": "gulp build"
+    "build": "gulp build",
+    "webpack": "webpack --config webpack.dev.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "chart.js": "^2.9.3"
+    "chart.js": "^2.9.3",
+    "core-js": "^3.6.5",
+    "randomcolor": "^0.6.2",
+    "regenerator-runtime": "^0.13.7"
   },
   "devDependencies": {
     "@babel/core": "^7.11.0",
+    "@babel/preset-env": "^7.11.0",
+    "babel-loader": "^8.1.0",
     "browser-sync": "^2.26.12",
-    "browserify": "^16.5.1",
     "gulp": "^4.0.2",
-    "gulp-babel": "*",
-    "gulp-livereload": "*",
-    "gulp-rename": "*",
-    "gulp-strip-debug": "^3.0.0",
-    "gulp-terser": "^1.2.1",
-    "vinyl-source-stream": "*"
+    "terser-webpack-plugin": "^3.0.8",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12",
+    "webpack-merge": "^5.0.9"
   }
 }
