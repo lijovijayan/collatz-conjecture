@@ -1,89 +1,51 @@
-const { src, dest, series } = require("gulp");
-const source = require("vinyl-source-stream");
 const gulp = require("gulp");
-const terser = require("gulp-terser");
-const babel = require("gulp-babel");
-const rename = require("gulp-rename");
-const browserify = require("browserify");
-var browserSync = require("browser-sync").create();
-var reload = browserSync.reload;
-var stripDebug = require("gulp-strip-debug");
+const webpack = require("webpack");
+const BrowserSync = require("browser-sync");
 
-const conf = {
-  srcdir: "./src/",
-  src: "main.js",
-  distdir: "./dist/",
-  builddir: "./build/",
-  build: "bundle.js",
-  dist: "bundle.js",
-  // destmin: "bundle.min.js",
-};
-const bundledev = () => {
-  console.log("browserify development build");
-  return browserify({
-    entries: `${conf.srcdir + conf.src}`,
-    debug: true,
-  })
-    .bundle()
-    .pipe(source(conf.build))
-    .pipe(gulp.dest(conf.builddir));
-};
-const stripdebug = () => {
-  console.log("stripping console logs");
-  return src(conf.srcdir + conf.src)
-    .pipe(stripDebug())
-    .pipe(gulp.dest("dist"));
-};
-const bundle = () => {
-  console.log("browserify production build");
-  return browserify({
-    entries: `${conf.srcdir + conf.src}`,
-    debug: false,
-  })
-    .bundle()
-    .pipe(source(conf.dist))
-    .pipe(gulp.dest(conf.distdir));
-};
-const babelBuild = () => {
-  console.log("running Babel compiler");
-  return src(conf.distdir + conf.dist)
-    .pipe(babel())
-    .pipe(rename(conf.dist))
-    .pipe(dest(conf.distdir));
-};
-const es = () => {
-  console.log("running gulp-terser js minimizer");
-  return gulp
-    .src(conf.distdir + conf.dist)
-    .pipe(terser())
-    .pipe(gulp.dest(conf.distdir));
-};
-// gulp.task("devserve", function () {
-//   bundledev();
-//   series(
-//     bundledev(),
-//     browserSync.init({
-//       server: {
-//         baseDir: "./",
-//       },
-//     })
-//   );
-//   gulp
-//     .watch([
-//       "./**/*.js",
-//       "!./**/*.html",
-//       "!./**/*.css",
-//       "!./dist/*",
-//       "!./build/*",
-//       "!./node_modules/*",
-//     ])
-//     .on("change", series(bundledev, reload));
-//   gulp.watch(["!./**/*.html", "!./**/*.css"]).on("change", reload);
-// });
-const startserver = () => {
-  browserSync.init({
+const DIST_DIR = "./dist";
+const BUILD_DIR = "./build";
+const SRC_DIR = "./app";
+let DIR = "";
+let CONFIG;
+const browsersync = BrowserSync.create();
+const webpackConfigProd = require("./webpack.prod.js");
+const webpackConfigDev = require("./webpack.dev.js");
+gulp.task("copy:html", () => {
+  return gulp.src(`${SRC_DIR}/template/index.html`).pipe(gulp.dest(DIR));
+});
+
+gulp.task("copy:css", () => {
+  return gulp.src(`${SRC_DIR}/template/main.css`).pipe(gulp.dest(DIR));
+});
+gulp.task("webpack:build", () => {
+  return new Promise((resolve, reject) => {
+    webpack(CONFIG, (err, stats) => {
+      if (err) {
+        return reject(err);
+      }
+      if (stats.hasErrors()) {
+        return reject(new Error(stats.compilation.errors.join("\n")));
+      }
+      resolve();
+    });
+  });
+});
+
+gulp.task("conf:prod", (task) => {
+  DIR = DIST_DIR;
+  CONFIG = webpackConfigProd;
+  return task();
+});
+
+gulp.task("conf:dev", (task) => {
+  DIR = BUILD_DIR;
+  CONFIG = webpackConfigDev;
+  return task();
+});
+gulp.task("server:start", () => {
+  browsersync.init({
     server: {
-      baseDir: "./",
+      baseDir: "./build",
     },
   });
   gulp
@@ -95,8 +57,29 @@ const startserver = () => {
       "!./build/*",
       "!./node_modules/*",
     ])
-    .on("change", series(bundledev, reload));
-  gulp.watch(["!./**/*.html", "!./**/*.css"]).on("change", reload);
-};
-exports.build = series(stripdebug, bundle, babelBuild, es);
-exports.serve = series(bundledev, startserver);
+    .on(
+      "change",
+      gulp.series(
+        "conf:dev",
+        "copy:html",
+        "copy:css",
+        "webpack:build",
+        browsersync.reload
+      )
+    );
+});
+
+gulp.task(
+  "build",
+  gulp.series("conf:prod", "copy:html", "copy:css", "webpack:build")
+);
+gulp.task(
+  "serve",
+  gulp.series(
+    "conf:dev",
+    "copy:html",
+    "copy:css",
+    "webpack:build",
+    "server:start"
+  )
+);
