@@ -24,7 +24,7 @@ const generateChart = async () => {
       }
     }
     console.log(hailstone_sequence, hailstone_sequence.length);
-    addDataset(hailstone_sequence, _number);
+    addDataset(hailstone_sequence, _number, i);
     if (chart_data.data.labels.length < count) {
       chart_data.data.labels = [];
       for (let j = 1; j <= count; j++) {
@@ -35,7 +35,7 @@ const generateChart = async () => {
     await sleep(1000);
   }
 };
-const addDataset = (sequence, number) => {
+const addDataset = (sequence, number, i) => {
   chart_data.data.datasets.push({
     label: `${number} (${i + 1})`,
     borderColor: randomColor(),
@@ -53,7 +53,8 @@ function basicChartData() {
     options: {
       title: {
         display: true,
-        text: "COLLATZ CONJECTURE SEQUENCE VISUALIZATION",
+        text: "COLLATZ CONJECTURE SEQUENCE VISUALIZATION (reload to generate radom numbers)",
+
       },
       elements: {
         line: {

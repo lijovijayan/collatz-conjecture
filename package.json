@@ -2,11 +2,13 @@
   "name": "jsapp",
   "version": "1.0.0",
   "description": "",
+  "homepage": "https://lijovijayan.github.io/collatz-conjecture",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "gulp serve",
     "build": "gulp build",
+    "deploy": "node ./gh-page-deploy.js",
     "webpack": "webpack --config webpack.dev.js"
   },
   "author": "",
@@ -14,6 +16,7 @@
   "dependencies": {
     "chart.js": "^2.9.3",
     "core-js": "^3.6.5",
+    "gh-pages": "^3.2.3",
     "randomcolor": "^0.6.2",
     "regenerator-runtime": "^0.13.7"
   },
